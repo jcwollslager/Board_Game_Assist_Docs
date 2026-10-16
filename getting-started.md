@@ -21,8 +21,11 @@ Using BGA to make the component is going to generate all the texture mapping, ph
 ### Texturing Components
 If making the component was picking out the size, shape, and material, texturing is like printing the graphics onto it. BGA handles all the texture mapping for its components, and is able to handle a variety of organization processes for graphics for things like cards, dice, tokens, boards, boxes, etc.
 
-_However,_ BGA works best if you treat it similarly to how manufacturers print out your board games. You, ideally, want all your graphics on large, combined, single-image grids, grouped by shared components. Think of it like having just one graphics file for every entry in your rulebook's component list. All of one deck of cards gets its own image, all the player boards gets its own image, etc. Now, that doesn't mean you _have_ to have all your component's graphics laid out like that, for the most part BGA is happy to accept individual images, though that workflow isn't extensively tested. Just keep in mind that the workflow is optimized for grids of images for shared components.
+_However,_ BGA works best if you treat it similarly to how manufacturers print out your board games. You, ideally, want all your graphics on large, combined, single-image grids, grouped by shared components. Think of it like having just one graphics file for every entry in your rulebook's component list. All of one deck of cards gets its own image, all the player boards gets its own image, etc. Now, that doesn't mean you _have_ to have all your component's graphics laid out like that, for the most part BGA is happy to accept individual images, especially as one-offs like the shared back for a deck of cards, though that workflow isn't extensively tested for _every_ card getting its own image. Just keep in mind that the workflow is optimized for grids of images for shared components.
 
+<img alt="Standard Playing Cards Atlas" src="{{ '/assets/images/standard-playing-cards-atlas.png' | relative_url }}" />
+
+_Y'know, something like this. This is also full resolution, so feel free to download this and use it to experiment._
 
 ## Component Types
 At the highest level, board games are just a bunch of pieces of cardboard, plastic, and metal that are getting moved around on a table. However, there's a lot of overlap between functionality when you _really_ break it down. As such, I refer to things in slightly unusual ways to allow for better shared functionality.
