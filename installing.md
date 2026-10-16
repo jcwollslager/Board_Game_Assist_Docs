@@ -11,15 +11,15 @@ I've made installing BGA as easy as possible! You'll need three things:
 
 **Step 1: Install the installer.**
 You'll need to install this by going in blender to Edit > Preferences, and then navigating to "Get Extensions." In the top right is a dropdown arrow that will allow you to install the zip file from the disk. No need to unzip it either!
-> <img width="949" height="601" alt="Screenshot 2026-10-15 at 3 22 51 PM" src="https://github.com/user-attachments/assets/a073461c-e72e-4772-bd0d-d237f96ba2ce" />
+> <img width="949" height="601" alt="Blender Get Extensions menu showing Install from Disk" src="{{ '/assets/images/install-step-1.png' | relative_url }}" />
 
 **Step 2: Activate the Add-on**
 Once you've done so, you'll then need to navigate to Add-Ons on the left side of your preferences, and expand the Board Game Assist Client Installer. Inside of here is where you'll put your activation key that I sent you. It should look like XXXXX-XXXXX-XXXXX-XXXXX-XXXXX
-> <img width="938" height="586" alt="Screenshot 2026-10-15 at 3 26 48 PM" src="https://github.com/user-attachments/assets/18298d0d-79a6-4467-a135-f3612dc2dc98" />
+> <img width="938" height="586" alt="BG Assist Client Installer activation key field" src="{{ '/assets/images/install-step-2.png' | relative_url }}" />
 Note: Depending on who you are, you may see a "cleanup old BGA versions" warning pop up. Feel free to use that to get rid of any old versions you may have been sent.
 
 **Step 3: Install the thing!**
 This one's easy! Hit the check for updates button, count to three, and then install the add-on!
-> <img width="938" height="588" alt="Screenshot 2026-10-15 at 3 39 47 PM" src="https://github.com/user-attachments/assets/539d6849-70b3-43e7-a2d1-e14176822e30" />
+> <img width="938" height="588" alt="BG Assist update check and installation controls" src="{{ '/assets/images/install-step-3.png' | relative_url }}" />
 
 After that, feel free to disable the installer, it's basically just there to get things up and running. Otherwise, the plug-in itself should update automatically.
