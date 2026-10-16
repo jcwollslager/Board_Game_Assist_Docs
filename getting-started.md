@@ -50,16 +50,16 @@ As we've discussed, a deck of cards is a stack. But a scattered pile of tokens? 
 
 Stack stack stack stack.
 
-### Dice
+### Dice (In Development)
 Contrary to stackables, dice are dice. You know what dice are. Moving on.
 
-### Boxes
+### Boxes (In Development)
 Boxes are specifically any containers that you may have. Currently I only have support for the standard two-part board game boxes we all know and love, but eventually I want to incorporate tuckboxes and envelopes, at which point these'll just be named "containers."
 
-### Bits
+### Bits (Coming Soon)
 It's the catch-all! Notably **meeples** are in here, along with cubes, beads, marbles, standees, plastic markers, and basically anything that doesn't fit into any of the other categories. If you struggle to categorize something, it's in here.
 
-### Surfaces
+### Surfaces (In Development)
 Surfaces, I'll admit, are a bit weird. You'll need to think about them in a similar way to "all squares are rectangles but not all rectangles are squares." We'll start by talking about surfaces like we've talked about other components.
 
 Surfaces, on their own, are things like boards and neoprene mats. They're not typically flipped over, and they're typically low in quantity in your game, usually only having one to four copies of them. Also, they have things put on top of them.
