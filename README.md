@@ -1,5 +1,3 @@
-# BG Assist Documentation
+# BG Assist Documentation and Public Wiki
 
-This repository contains the public, client-facing documentation for BG Assist.
-
-The private `Board_Game_Assist` wiki remains the working copy. Updates are copied here only when they are ready to publish.
+The code for this project is *closed source* and is not to be shared.
