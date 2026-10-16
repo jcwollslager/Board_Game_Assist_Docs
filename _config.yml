@@ -1,0 +1,14 @@
+title: BG Assist Documentation
+description: User documentation for the Board Game Assist add-on for Blender.
+theme: minima
+header_pages:
+  - index.md
+  - installing.md
+  - getting-started.md
+
+github:
+  is_project_page: false
+
+exclude:
+  - README.md
+  - LICENSE
