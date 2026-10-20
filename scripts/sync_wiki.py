@@ -181,19 +181,48 @@ def download_image(url: str, token: str) -> tuple[bytes, str | None]:
         return response.read(), response.headers.get("Content-Type")
 
 
-def localize_images(text: str, docs_dir: Path, token: str, used_images: set[str]) -> str:
+def localize_images(
+    text: str,
+    docs_dir: Path,
+    token: str,
+    used_images: set[str],
+    known_images: dict[str, str],
+) -> str:
     image_dir = docs_dir / "assets" / "images"
     image_dir.mkdir(parents=True, exist_ok=True)
 
     def replace_image(match: re.Match[str]) -> str:
         url = match.group("html_url") or match.group("md_url")
-        image_bytes, content_type = download_image(url, token)
         digest = hashlib.sha256(url.encode("utf-8")).hexdigest()[:16]
-        filename = f"wiki-{digest}{image_extension(url, content_type)}"
-        relative_path = f"assets/images/{filename}"
-        destination = docs_dir / relative_path
-        if not destination.exists() or destination.read_bytes() != image_bytes:
-            destination.write_bytes(image_bytes)
+        relative_path = known_images.get(url, "")
+
+        if relative_path:
+            destination = docs_dir / relative_path
+            if not destination.is_file():
+                raise RuntimeError(
+                    f"The mapped public image does not exist: {relative_path}"
+                )
+        else:
+            existing_images = sorted(image_dir.glob(f"wiki-{digest}.*"))
+            if existing_images:
+                destination = existing_images[0]
+                relative_path = destination.relative_to(docs_dir).as_posix()
+            else:
+                try:
+                    image_bytes, content_type = download_image(url, token)
+                except (OSError, urllib.error.URLError) as error:
+                    print(
+                        "::warning title=Wiki image was not published::"
+                        f"GitHub would not allow this private attachment to be downloaded: {url} "
+                        f"({error})"
+                    )
+                    return match.group(0)
+
+                filename = f"wiki-{digest}{image_extension(url, content_type)}"
+                relative_path = f"assets/images/{filename}"
+                destination = docs_dir / relative_path
+                if not destination.exists() or destination.read_bytes() != image_bytes:
+                    destination.write_bytes(image_bytes)
         used_images.add(relative_path)
 
         public_url = "{{ '/" + relative_path.replace(os.sep, "/") + "' | relative_url }}"
@@ -283,6 +312,8 @@ def main() -> None:
         for alias in page_aliases(page)
     }
     token = os.environ.get("BGA_WIKI_READ_TOKEN", "")
+    image_map_path = docs_dir / "scripts" / "wiki_image_map.json"
+    known_images = json.loads(image_map_path.read_text(encoding="utf-8"))
     manifest_path = docs_dir / MANIFEST_NAME
     old_manifest = load_manifest(manifest_path)
     used_images: set[str] = set()
@@ -291,7 +322,7 @@ def main() -> None:
         source_text = page.source.read_text(encoding="utf-8")
         body = remove_existing_front_matter(source_text)
         body = rewrite_page_links(body, aliases)
-        body = localize_images(body, docs_dir, token, used_images)
+        body = localize_images(body, docs_dir, token, used_images, known_images)
         output = front_matter(page) + body.strip() + "\n"
         (docs_dir / page.output_name).write_text(output, encoding="utf-8")
 

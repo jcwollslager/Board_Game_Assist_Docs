@@ -48,6 +48,7 @@ jobs:
           python scripts/sync_wiki.py --wiki-dir _private_wiki --docs-dir .
 
       - name: Remove the temporary private-wiki checkout
+        if: always()
         run: rm -rf _private_wiki
 
       - name: Publish changed documentation
