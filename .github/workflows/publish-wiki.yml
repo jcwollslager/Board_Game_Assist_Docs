@@ -1,0 +1,80 @@
+name: Publish Wiki to Public Docs
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: publish-bga-wiki
+  cancel-in-progress: false
+
+jobs:
+  publish-wiki:
+    name: Publish private wiki
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out public documentation
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Confirm the private-wiki token is configured
+        env:
+          WIKI_TOKEN: ${{ secrets.BGA_WIKI_READ_TOKEN }}
+        run: |
+          if [ -z "$WIKI_TOKEN" ]; then
+            echo "The BGA_WIKI_READ_TOKEN repository secret is missing."
+            exit 1
+          fi
+
+      - name: Read the private BG Assist wiki
+        env:
+          WIKI_TOKEN: ${{ secrets.BGA_WIKI_READ_TOKEN }}
+        run: |
+          BASIC_AUTH="$(printf 'x-access-token:%s' "$WIKI_TOKEN" | base64 -w 0)"
+          git -c http.https://github.com/.extraheader="AUTHORIZATION: basic $BASIC_AUTH" \
+            clone --depth 1 \
+            https://github.com/jcwollslager/Board_Game_Assist.wiki.git \
+            _private_wiki
+
+      - name: Convert wiki pages for GitHub Pages
+        env:
+          BGA_WIKI_READ_TOKEN: ${{ secrets.BGA_WIKI_READ_TOKEN }}
+        run: |
+          python scripts/sync_wiki.py --wiki-dir _private_wiki --docs-dir .
+
+      - name: Remove the temporary private-wiki checkout
+        run: rm -rf _private_wiki
+
+      - name: Publish changed documentation
+        id: publish
+        run: |
+          git diff --check
+          git add --all
+
+          if git diff --cached --quiet; then
+            echo "The public documentation is already up to date."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Publish public documentation from private wiki"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Request the GitHub Pages rebuild
+        if: steps.publish.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl --fail-with-body --location --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/pages/builds"
