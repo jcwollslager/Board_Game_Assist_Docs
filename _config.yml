@@ -5,6 +5,7 @@ header_pages:
   - index.md
   - installing.md
   - getting-started.md
+  - stackables.md
 
 github:
   is_project_page: false

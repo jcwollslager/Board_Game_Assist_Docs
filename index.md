@@ -1,6 +1,6 @@
 ---
 layout: page
-title: BG Assist
+title: "BG Assist"
 permalink: /
 ---
 

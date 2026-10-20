@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Getting Started
+title: "Start-up Guide"
 permalink: /getting-started/
 ---
 
@@ -67,3 +67,35 @@ Surfaces, on their own, are things like boards and neoprene mats. They're not ty
 The problem comes from that last bit, "they have things put on top of them," which if you think about it... in a lot of board games, there's a _lot_ of components that have things put on top of them. As a result, _anything can be a surface._ Now when thinking about our surface category, we'll also need to include things like cards that you place cubes onto, tiles that you move pawns on, the insert for the box, the box itself, or even the virtual table that you're posing the components on for renders.
 
 So, that's why _every surface is a component, but not every component is a surface._ You're not regularly placing d4's on top of other d4's, as it were. You'll want to register any component (or non-bga object like tables!) that has things placed on top of it at any point as a surface in BGA to help BGA recognize that things will indeed be put on top of it. Think of the surface category like a standalone expansion with backwards compatibility: you can have a surface on its own, but you can also combine surfaces with stackables to get stackable surfaces, as an example.
+
+# Add-on Window Layout
+<img width="497" height="702" alt="A screenshot of the BGA Add-on window as seen in the viewport on a fresh file." src="{{ '/assets/images/addon-window.png' | relative_url }}" />
+_A view of the add-on as it appears in the viewport with all the sub-menus collapsed. (Add-on Version 2.1.10)_
+
+I'll admit, BGA is constantly getting changed and rearranged as I find more efficient ways to arrange it. So, take this as more an overview of what you generally can find in the add-on and vaguely where it is within its many nested menus.
+
+## Organization
+BGA is (currently) split into two modules: The main BG Assist window, and BGA Component Manager. In the screenshot above, the BG Assist module is expanded.
+
+### Main BG Assist Module
+BG Assist is the main module of, well, BG Assist. It's organized from top to bottom to mimic the process of creating and working with components in real life, where you first decide on a size, shape, and material for a component, then you print the graphics onto that medium. At the top of the addon window, you have the **Components** section. In the top half, there are options to create new components. As of 2.1.10, this will take you through the entire process of creating the geometry of the component, deciding on things like the shape of the component, the material it's printed on, thickness, etc., and then texturing the component, or the "printing" process as it were.
+
+Below that is the **Layout** section. Now that you've "printed" your components, you're ready to move them around! Board games, when you break them down, are just us fantasizing about what differently colored pieces of cardboard and plastic mean as we move them around on a table, and so how you move pieces around is a big part of what BGA helps with. There are five main categories of moving components around:
+* **Move** - translating components quickly and easily across your scene
+* **Orient** - rotating components in sensible ways, like aligning them to the game board or flipping components to their opposite sides, rotating dice to specific faces, etc.
+* **Settle** - Use Blender's physics to automatically let components "settle" into natural-looking positions
+* **Stack** - Control the layout of your stackable components, randomizing their positions, making grids and splays for renders, and so on.
+* **Pile** - Use Blender's physics to chuck everything selected into a pile of stuff, then re-run the physics on objects that bounced too far away.
+
+### BGA Component Manager
+The component manager component of BG Assist is there to help plan and design your components inside of Blender, as well as give you a centralized location where you can add components into your scenes as you need them, whether that just be one specific variation of a card or and entire deck, as an example. The best analogy I can give is to treat the component manager _like the component list of your rulebook._ Everything that appears there will (likely) have an entry on BGA.
+
+You may have noticed that there are two ways to go about making components with BGA, with one being inside the main module, and the other being here inside the component manager. They both _function_ the same, and will give you the same results, but go about it in more or less organizes ways. Do you want to just put components together as you think of them and as you get the art together for them? You can just use the main module's workflow. Do you want an organized list of _every_ component in your game before you start methodically putting things together? Then using the component manager is likely for you. Either way, you'll have a list to back yourself up.
+
+<img width="384" height="423" alt="A screenshot of the component manager with default objects populating it." src="{{ '/assets/images/component-manager.png' | relative_url }}" />
+
+_Here's the component manager with one of each component type inside it, none of which are currently set up as indicated by the tool icon_
+
+Components in the component manager can have two states, when they're just planned, or when they're fully fleshed out with geometry and textures. When creating components in the component manager, you can simply just specify the type of component, the material it's made of, and give it a name. Then, component manager will hold onto that for you with the information saved to that Blender project. This information should persist across the entire document and between saves.
+
+If something isn't appearing inside the component manager, your best friend is the button on the bottom: the **Refresh Project Components** button. This will go through your entire document and find all the components you've made through either workflow and make sure they're in the component manager's list. This also will check the geometry and texture information of the objects to make sure that you haven't done anything to them that may mess with BGA functionality, such as manually editing UV's, modifying the geometry in edit mode, adding extra modifiers, etc. As a note, you _are_ free to do such things to BGA components if you know what you're doing, just know that it _could_ cause unintended results when using BGA to manage that component.

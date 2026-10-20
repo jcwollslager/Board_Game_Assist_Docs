@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "getting-started.md",
+    "index.md",
+    "installing.md",
+    "stackables.md"
+  ],
+  "images": [
+    "assets/images/addon-window.png",
+    "assets/images/component-manager.png",
+    "assets/images/install-step-1.png",
+    "assets/images/install-step-2.png",
+    "assets/images/install-step-3.png",
+    "assets/images/standard-playing-cards-atlas.png"
+  ]
+}
