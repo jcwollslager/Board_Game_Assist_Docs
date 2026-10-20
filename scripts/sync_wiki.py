@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import html
 import json
 import mimetypes
 import os
@@ -25,6 +26,11 @@ IMAGE_URL_PATTERN = re.compile(
 )
 MARKDOWN_LINK_PATTERN = re.compile(r"(?<!!)\[([^\]]+)\]\(([^)]+)\)")
 WIKI_LINK_PATTERN = re.compile(r"\[\[([^\]]+)\]\]")
+RENDERED_IMAGE_PATTERN = re.compile(
+    r"<img\b[^>]*?\bsrc=[\"'](?P<url>[^\"']+)[\"']",
+    re.IGNORECASE,
+)
+PRIVATE_WIKI_REPOSITORY = "jcwollslager/Board_Game_Assist"
 
 
 @dataclass(frozen=True)
@@ -181,6 +187,56 @@ def download_image(url: str, token: str) -> tuple[bytes, str | None]:
         return response.read(), response.headers.get("Content-Type")
 
 
+def rendered_attachment_url(url: str, token: str) -> str:
+    """Ask GitHub for the temporary signed URL used to render a private image."""
+    if not token:
+        return ""
+
+    payload = json.dumps(
+        {
+            "text": f"![Wiki image]({url})",
+            "mode": "gfm",
+            "context": PRIVATE_WIKI_REPOSITORY,
+        }
+    ).encode("utf-8")
+    request = urllib.request.Request(
+        "https://api.github.com/markdown",
+        data=payload,
+        method="POST",
+        headers={
+            "Accept": "text/html",
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "User-Agent": "BGA-Wiki-Publisher/1.0",
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=60) as response:
+        rendered = response.read().decode("utf-8", errors="replace")
+
+    match = RENDERED_IMAGE_PATTERN.search(rendered)
+    if not match:
+        return ""
+    resolved = html.unescape(match.group("url"))
+    return resolved if resolved != url else ""
+
+
+def download_wiki_image(url: str, token: str) -> tuple[bytes, str | None]:
+    """Download a wiki image, resolving GitHub's private signed URL if needed."""
+    direct_error: OSError | urllib.error.URLError
+    try:
+        return download_image(url, token)
+    except (OSError, urllib.error.URLError) as error:
+        direct_error = error
+        try:
+            signed_url = rendered_attachment_url(url, token)
+            if signed_url:
+                return download_image(signed_url, "")
+        except (OSError, urllib.error.URLError):
+            pass
+        raise direct_error
+
+
 def localize_images(
     text: str,
     docs_dir: Path,
@@ -209,7 +265,7 @@ def localize_images(
                 relative_path = destination.relative_to(docs_dir).as_posix()
             else:
                 try:
-                    image_bytes, content_type = download_image(url, token)
+                    image_bytes, content_type = download_wiki_image(url, token)
                 except (OSError, urllib.error.URLError) as error:
                     print(
                         "::warning title=Wiki image was not published::"

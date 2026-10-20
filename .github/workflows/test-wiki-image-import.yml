@@ -1,0 +1,21 @@
+name: Test Automatic Wiki Image Import
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-image-import:
+    name: Download a private wiki image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the documentation tools
+        uses: actions/checkout@v4
+
+      - name: Test GitHub's authenticated image handoff
+        env:
+          BGA_WIKI_READ_TOKEN: ${{ secrets.BGA_WIKI_READ_TOKEN }}
+        run: python scripts/probe_private_wiki_image.py
